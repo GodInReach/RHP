@@ -1,0 +1,45 @@
+    #include <bits/stdc++.h>
+ 
+    using namespace std;
+ 
+    long find(vector<long> &seg, int node, int ql, int qr, int nl, int nr) {
+ 
+            if (qr < nl || ql > nr) {
+                return LONG_MAX;
+            }
+            if (ql <= nl && qr >= nr) {
+                return seg[node];
+            }
+            int mid = nl + (nr - nl) / 2;
+            long left = find(seg, 2 * node, ql, qr, nl, mid);
+            long right = find(seg, 2 * node + 1, ql, qr, mid + 1, nr);
+ 
+            return min(left, right);
+        }
+ 
+    int main()
+    {
+        int N, Q;
+        cin >> N >> Q;
+        int newN = 1;
+        while (newN < N)
+            newN = newN << 1;
+        
+        vector<long> seg(newN+newN, LONG_MAX);
+        for (int i = newN; i < newN + N; i++)
+        {
+            cin >> seg[i];
+        }
+        for (int i = newN - 1; i > 0; i--)
+        {
+            seg[i] = min(seg[i + i], seg[i + i + 1]);
+        }
+        N = newN;
+ 
+        while (Q-- > 0)
+        {
+            int Li, Ri;
+            cin >> Li >> Ri;
+            cout << find(seg, 1, Li, Ri, 1, N) << endl ;
+        }
+  }
